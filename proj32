@@ -1,0 +1,71 @@
+;Problem 32
+
+;We shall say that an n-digit number is pandigital if it makes use of all the digits 1 to n exactly once; for example, the 5-digit number, ;15234, is 1 through 5 pandigital.
+
+;The product 7254 is unusual, as the identity, 39*186 = 7254, containing multiplicand, multiplier, and product is 1 through 9 pandigital.
+
+;Find the sum of all products whose multiplicand/multiplier/product identity can be written as a 1 through 9 pandigital.
+
+;HINT: Some products can be obtained in more than one way so be sure to only include it once in your sum.
+
+(define mmbr?
+  (lambda (n l)
+    (cond ((null? l)
+           #f)
+           ((eq? n (car l))
+            #t)
+           (else (mmbr? n (cdr l))))))
+
+(define cns
+  (lambda (l1 l2)
+    (cond ((null? l1)
+           l2)
+           (else (cons (car l1) (cns (cdr l1) l2))))))
+
+(define (spl num)
+  (if (= num 0)
+      '()
+      (cons (modulo num 10) (spl (quotient num 10)))))
+
+(define rmv
+  (lambda (l)
+    (cond ((null? l)
+          '())
+          ((= (car l) 0)
+           (rmv (cdr l)))
+          ((mmbr? (car l) (cdr l))
+           (rmv (cdr l)))
+          (else (cons (car l) (rmv (cdr l)))))))
+
+
+(define fnd
+  (lambda (n1 n2)
+    (define l '())
+    (set! l (cns (spl n1) (cns (spl n2) (spl (* n1 n2)))))
+    (define m '())
+    (set! m (rmv l))
+    (cond ((> n2 999)
+           '())
+          ((= n1 9999)
+           (fnd 1 (+ n2 1)))
+          ((and (= (length l) (length m)) (= (length l) 9)) 
+           (cons (* n1 n2) (fnd (+ n1 1) n2)))
+          (else (fnd (+ n1 1) n2)))))
+
+
+(define add                      ;(add (rmv (fnd  1 1)))   ;45228
+  (lambda (l)
+    (cond ((null? l)
+           0)
+          (else (+ (car l) (add (cdr l)))))))
+
+
+
+
+
+              
+
+           
+                      
+
+                  

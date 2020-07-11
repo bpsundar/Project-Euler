@@ -1,0 +1,42 @@
+#lang racket/base
+(define game
+    (lambda (w1 w2)
+      (cond ((>= w1 100) 'w1)
+            ((>= w2 100) 'w2)
+            (else (game (chk (+ w1 (random 6) 1)) (+ w2 3))))))
+
+
+(define trial
+  (lambda (n t1 t2)
+    (if (= n 0)
+        (list t1 t2)
+        (if (eq? (game 0 0) 'w1)
+            (trial (- n 1) (+ t1 1) t2)
+            (trial (- n 1) t1 (+ t2 1))))))
+
+(define chk
+  (lambda (w1)
+    (cond ((= w1 2) (+ w1 53))
+      ((= w1 13) (+ w1 14))
+      ((= w1 26) (- w1 20))
+      ((= w1 30) (- w1 19))
+      ((= w1 31) (+ w1 36))
+      ((= w1 38) (+ w1 27))
+      ((= w1 42) (- w1 26))
+      ((= w1 60) (+ w1 2))
+      ((= w1 69) (+ w1 18))
+      ((= w1 75) (- w1 17))
+      ((= w1 76) (+ w1 19))
+      ((= w1 82) (- w1 24))
+      ((= w1 97) (- w1 53))
+      (else w1))))
+
+(define game1
+    (lambda (w1 w2)
+      (cond ((or (>= w1 100) (>= w2 100)) (list w1 w2))
+            (else (game (chk (+ w1 (random 6) 1)) (+ w2 3))))))
+
+(define game2
+    (lambda (w1 w2)
+      (cond ((or (>= w1 100) (>= w2 100)) (- w1 w2))
+            (else (game (chk (+ w1 (random 6) 1)) (+ w2 3))))))

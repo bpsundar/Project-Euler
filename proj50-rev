@@ -1,0 +1,65 @@
+(define gen                         ;(gen 100 2)
+  (lambda (n i)
+    (cond ((< n 2)
+           '())
+          ((> i (sqrt n))
+           (cons n (gen (- n 1) 2)))
+          ((= (modulo n i) 0)
+           (gen (- n 1) 2))
+          (else (gen n (+ i 1))))))
+
+(define upr-lmt 1000000)
+
+(define l (reverse (gen upr-lmt 2)))
+          
+
+(define membr                    ;(membr 41 (gen 100 2))
+  (lambda (n l)
+    (cond ((null? l)
+           #f)
+          ((eq? n (car l))
+           #t)
+          (else (membr n (cdr l))))))
+
+
+(define add-oly                      ;(add (gen 10 2) 0)
+  (lambda (l tot)
+    (cond ((or (null? l) (> (+ tot (car l)) upr-lmt))
+           '())
+          ((membr (+ tot (car l)) l)
+           (cons (+ tot (car l)) (add-oly (cdr l) (+ tot (car l)))))
+          (else (add-oly (cdr l) (+ tot (car l)))))))
+
+(define add                      ;(add (gen 10 2) 0)
+  (lambda (l tot)
+    (cond ((or (null? l) (> (+ tot (car l)) upr-lmt))
+           '())
+          (else (cons (+ tot (car l)) (add (cdr l) (+ tot (car l))))))))
+
+(define fnd-cnt                    ;(fnd-cnt 41 (add l 0) 0)
+  (lambda (n l i)
+    (cond ((eq? n (car l))
+           (cons n (cons (+ i 1) '())))
+          (else (fnd-cnt n (cdr l) (+ i 1))))))
+          
+
+(define last
+  (lambda (l)
+    (car (reverse l))))
+
+;(fnd-cnt (last (add-oly l 0)) (add l 0) 0)
+
+(define fnd-all
+  (lambda (l i)
+    (define b 0)
+    (cond ((null? l)
+           '())
+          (else (set! b (fnd-cnt (last (add-oly l 0)) (add l 0) 0))
+                (cond ((> (last b) i)
+                       (cons (car b) (fnd-all (cdr l) (last b))))
+                      (else (fnd-all (cdr l) i)))))))
+
+;(fnd-all l 0)
+
+
+    

@@ -1,0 +1,61 @@
+;Problem 34
+;145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
+
+;Find the sum of all numbers which are equal to the sum of the factorial of their digits.
+
+;Note: as 1! = 1 and 2! = 2 are not sums they are not included.
+
+(define (spl num)
+  (if (= num 0)
+      '()
+      (cons (modulo num 10) (spl (quotient num 10)))))
+
+(define fac
+  (lambda (num)
+    (cond ((= num 0)
+           1)
+          ((* num (fac (- num 1)))))))
+
+(define add
+  (lambda (l)
+    (cond ((null? l)
+           0)
+          (else (+ (fac (car l)) (add (cdr l)))))))
+
+(define fnd
+  (lambda (n)
+    (cond ((= n 99999)
+           0)
+          ((= n (add (spl n)))
+           (+ n (fnd (+ n 1))))
+          (else (fnd (+ n 1))))))
+
+;(fnd 11)
+;40730
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              
+
+           
+                      
+
+                  

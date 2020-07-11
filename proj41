@@ -1,0 +1,80 @@
+;Problem 41
+;We shall say that an n-digit number is pandigital if it makes use of all the digits 1 to n exactly once. For example, 2143 is a 4-digit ;pandigital and is also prime.
+
+;What is the largest n-digit pandigital prime that exists?
+
+
+(define (spl num)
+  (if (= num 0)
+      '()
+      (cons (modulo num 10) (spl (quotient num 10)))))
+
+
+(define mmbr?
+  (lambda (n l)
+    (cond ((null? l)
+           #f)
+           ((eq? n (car l))
+            #t)
+           (else (mmbr? n (cdr l))))))
+
+(define rmv
+  (lambda (l n)
+    (cond ((= n 0)
+          #t)
+          ((mmbr? n l)
+           (rmv l (- n 1)))
+          (else #f))))
+
+(define pan?
+  (lambda (i)
+    (cond ((rmv (spl i) (length (spl i)))
+           #t)
+          (else #f))))
+
+(define prm?                     ;(prm? 97 2)
+  (lambda (i n)
+    (cond ((> n (sqrt i))
+           #t)
+          ((= (modulo i n) 0)
+           #f)
+          (else (prm? i (+ n 1))))))
+
+(define (sq x) (* x x))
+
+(define (fst-pwr b n)                       ;[fst-pwr 2 1000]
+  (define (iter b n prod)
+    (if (= n 0)
+        prod
+        (if (= (modulo n 2) 0)
+            (iter (sq b) (/ n 2) prod)
+            (iter b (- n 1) (* b prod)))))
+  (iter b n 1))
+
+(define (fermat-tst n)                       ;[fermat-tst 561] [1105 1729 6857]
+  (define (iter a t)
+    (if (> t 0)
+        (if (= (remainder (fst-pwr a (- n 1)) n) (modulo 1 n))
+            (iter (+ 1 (random (- n 1))) (- t 1))
+            #f) ;(write 'not-prime))
+        #t)) ;(write 'prime)))
+  (iter (+ 1 (random (- n 1))) 10))
+
+(define fnd 
+  (lambda (i)
+    (cond ((< i 7652413)
+           '())
+          ((and (prm? i 2) (pan? i))
+           i)
+          (else (fnd (- i 1))))))
+
+;7652413
+
+
+
+
+
+
+
+
+
